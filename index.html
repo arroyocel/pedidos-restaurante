@@ -68,11 +68,8 @@ footer{text-align:center;color:#777;font-size:12px;padding:25px}
     </label>
   </div>
 
-  <div class="settings">
-    <label>📲 Número de WhatsApp del negocio
-      <input id="phone" value="573104298587" inputmode="numeric">
-    </label>
-    <div class="small">Escribe el número en formato internacional, sin + ni espacios. Ejemplo Colombia: 573001234567.</div>
+  <div class="small" style="text-align:center;margin-top:12px">
+    📲 WhatsApp del negocio: <strong>310 429 8587</strong>
   </div>
 
   <div class="order">
@@ -80,7 +77,7 @@ footer{text-align:center;color:#777;font-size:12px;padding:25px}
     <div id="summary">Todavía no has agregado productos.</div>
     <div class="total">Total: <span id="total">$0</span></div>
     <button class="whatsapp" onclick="sendWhatsApp()">💬 ENVIAR PEDIDO POR WHATSAPP</button>
-    <div class="small">Al pulsar el botón se abrirá WhatsApp con el pedido listo para enviar al negocio.</div>
+    <div class="small">El pedido se enviará directamente al WhatsApp de SalchiExpress.</div>
   </div>
 </div>
 <footer>Menú digital • Pedidos por WhatsApp</footer>
@@ -127,16 +124,38 @@ function update(){
  document.getElementById("total").textContent=money(total);
 }
 function sendWhatsApp(){
- let phone=document.getElementById("phone").value.replace(/\D/g,"");
- let name=document.getElementById("name").value.trim();
- let address=document.getElementById("address").value.trim();
- let note=document.getElementById("note").value.trim();
- let items=[],total=0;
- cart.forEach((q,i)=>{if(q){let sub=q*products[i][1];total+=sub;items.push(`• ${q} x ${products[i][0]} = ${money(sub)}`)}});
- if(!items.length){alert("Agrega al menos un producto.");return}
- if(!phone || phone==="573104298587"){alert("Configura primero el número de WhatsApp del negocio.");return}
- let msg=`🔥 *NUEVO PEDIDO*%0A%0A${items.join("%0A")}%0A%0A💰 *TOTAL: ${money(total)}*%0A%0A👤 *Cliente:* ${name||"No indicado"}%0A📍 *Entrega:* ${address||"No indicada"}%0A📝 *Nota:* ${note||"Ninguna"}`;
- window.open(`https://wa.me/${phone}?text=${msg}`,"_blank");
+  const phone="573104298587";
+  const name=document.getElementById("name").value.trim();
+  const address=document.getElementById("address").value.trim();
+  const note=document.getElementById("note").value.trim();
+  let items=[],total=0;
+
+  cart.forEach((q,i)=>{
+    if(q){
+      const sub=q*products[i][1];
+      total+=sub;
+      items.push(`• ${q} x ${products[i][0]} = ${money(sub)}`);
+    }
+  });
+
+  if(!items.length){
+    alert("Agrega al menos un producto.");
+    return;
+  }
+
+  const msg =
+`🔥 *NUEVO PEDIDO*
+
+${items.join("
+")}
+
+💰 *TOTAL: ${money(total)}*
+
+👤 *Cliente:* ${name||"No indicado"}
+📍 *Entrega:* ${address||"No indicada"}
+📝 *Nota:* ${note||"Ninguna"}`;
+
+  window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`,"_blank");
 }
 render();
 </script>
